@@ -1,10 +1,11 @@
 package com.rest.webservices.restfulwebservices.controller;
 
 import com.rest.webservices.restfulwebservices.dao.UserDaoService;
-import com.rest.webservices.restfulwebservices.exception.UserAlreadyExistsException;
 import com.rest.webservices.restfulwebservices.exception.UserNotFoundException;
 import com.rest.webservices.restfulwebservices.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,14 +31,20 @@ public class UserController {
     }
 
     @GetMapping(path = "/users/{id}")
-    public User retrieveUserById(@PathVariable int id) {
+    public EntityModel<User> retrieveUserById(@PathVariable int id) {
         User user = userDaoService.findById(id);
 
         if (user == null) {
             throw new UserNotFoundException("User Not Found! id -> " + id);
         }
 
-        return user;
+        // link for get all users
+        EntityModel<User> resource = EntityModel.of(user);
+        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(this.getClass()).retrieveAllUsers());
+        resource.add(linkTo.withRel("all-users"));
+
+        return resource;
     }
 
     @PostMapping(path = "/users")
