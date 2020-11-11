@@ -1,10 +1,15 @@
 package com.rest.webservices.restfulwebservices.model;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 public class User {
     private Integer id;
+    @Size(min = 2, message = "'name' field should have atleast 2 characters")
     private String name;
+    @Past(message = "'birthDate' field must be a past date")
     private Date birthDate;
 
     public User(Integer id, String name, Date birthDate) {
