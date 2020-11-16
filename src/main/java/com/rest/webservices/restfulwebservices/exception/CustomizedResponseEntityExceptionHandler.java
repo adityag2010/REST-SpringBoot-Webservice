@@ -32,6 +32,14 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(PostNotFoundException.class)
+    public final ResponseEntity<Object> handleUserNotFoundException(PostNotFoundException ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                new Date(), HttpStatus.NOT_FOUND, ex.getMessage(), request.getDescription(false));
+
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(UserAlreadyExistsException.class)
     public final ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(
